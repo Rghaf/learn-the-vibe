@@ -13,6 +13,12 @@ It is made for people who build with AI and want to learn programming at the sam
 | **Friendly, very simple voice** | Small, common English words and short sentences, one idea each. Every technical word is explained the moment it appears. "Why" comes before "how". |
 | **Concept cards** | Every framework, library, tool, language feature or pattern the code uses gets a small card in a quote block: what it is, why it exists, how it is used here, and what to watch out for. |
 | **Engineer's view cards** | Short cards on system design and software engineering: where a piece sits in the system, the trade-off behind a choice, the principle at work, and what happens with more data, more users or a failure. |
+| **Flow diagrams** | A small text diagram of the pieces and what moves between them, with a ⭐ on the piece being worked on. |
+| **Lesson sizes** | `quick` for tiny changes, normal by default, `deep` for big ones. With no argument, Claude picks the size from the size of the work. |
+| **Predict, then look** | Once per lesson, before showing the key piece, Claude asks you to guess one thing about it. Guessing first makes the explanation stick. |
+| **Memory across sessions** | A notes file records which concepts you have met and how you did on them, so known concepts are not explained again and tricky ones come back a few days later. |
+| **Personal glossary** | Every card is saved to one file you can re-read or search. |
+| **Review mode** | `/learn-the-vibe review` quizzes you on past concepts with no coding task. |
 | **Something to read first** | Before Claude touches any file, it sends the todo list and a short explanation, so you have something to read while it works. |
 | **Code in the chat** | Each function, class, type or important line is shown as a real snippet with a link to the file, teaching comments marked `👉`, and a plain explanation underneath. |
 | **Wrap-up** | A 4–7 sentence summary, the list of files added or changed, and which tests or checks ran. |
@@ -100,6 +106,34 @@ To use it in a single project only, link or copy the folder into that project's 
 /learn-the-vibe explain how src/auth/login.ts works
 ```
 
+**Pick a size.** Put `quick` or `deep` first to set how big the lesson is:
+
+```text
+/learn-the-vibe quick rename the price column
+```
+
+```text
+/learn-the-vibe deep add CSV export to the orders page
+```
+
+| Size | For | The lesson |
+| --- | --- | --- |
+| `quick` | A typo, a rename, a one-line fix | Two sentences, the changed lines, at most one card. No todo list, no quiz. |
+| normal (default) | Most work | The full flow below, with a three-question quiz. |
+| `deep` | A new feature or a new part of the system | The full flow, every piece shown, a design card for each choice, a four-question quiz. |
+
+**Review.** Revise what you have learned, with no coding task. Add a topic to narrow it:
+
+```text
+/learn-the-vibe review
+```
+
+```text
+/learn-the-vibe review React
+```
+
+Claude picks up to eight concepts, starting with the ones you got wrong before, and asks them in rounds of four.
+
 **Automatically.** Claude loads the skill on its own when you ask it to write, change or explain code. For plain questions that involve no code, it stays out of the way.
 
 **Always on.** To make Claude use it in every session without being asked, add this to `~/.claude/CLAUDE.md`:
@@ -111,19 +145,44 @@ To use it in a single project only, link or copy the folder into that project's 
 
 ## How a session flows
 
-1. **Before the work: something to read.** Sent before any file is edited: what we are building and why, the todo list, concept cards for the main ideas, an Engineer's view card for the big picture, the mistakes people commonly make, and the shape of the solution in plain words. It takes a minute or two to read while Claude works.
-2. **The code: piece by piece.** Claude writes the code into your files in the project's own style. Then, for each piece, it names it with a clickable link, shows the real snippet with `👉` comments, explains what goes in and what comes out, and adds a card for any new concept. The todo list is shown again with finished steps ticked.
-3. **After the code: wrap-up.** Summary with the main design choice and its trade-off, files changed, what was tested.
-4. **Quiz.** Three questions with clickable options. After you answer, Claude sends ✅ or ❌ for each, the correct answer, and a sentence or two on why. If you picked a wrong option, it also says why that option was tempting.
+1. **Before the work: something to read.** Sent before any file is edited: what we are building and why, the todo list, concept cards for the main ideas, an Engineer's view card with a flow diagram for the big picture, the mistakes people commonly make, and the shape of the solution in plain words. It takes a minute or two to read while Claude works.
+2. **The work.** Claude writes the code into your files in the project's own style and runs the checks.
+3. **Predict, then look.** Claude asks you to guess one thing about the key piece and waits for your reply. A rough guess is perfect.
+4. **The code: piece by piece.** For each piece, it names it with a clickable link, shows the real snippet with `👉` comments, explains what goes in and what comes out, and adds a card for any new concept. The todo list is shown again with finished steps ticked.
+5. **After the code: wrap-up.** Summary with the main design choice and its trade-off, files changed, what was tested, and a fresh card for any concept that is due to come back.
+6. **Quiz.** Three questions with clickable options. After you answer, Claude sends ✅ or ❌ for each, the correct answer, and a sentence or two on why. If you picked a wrong option, it also says why that option was tempting.
 
-When you only ask for an explanation of existing code, step 2 skips the writing and teaches the code that is already there.
+When you only ask for an explanation of existing code, step 2 is skipped and Claude teaches the code that is already there.
+
+## Your notes and glossary
+
+Claude keeps two files in `~/.claude/learn-the-vibe/`. They are shared by all your projects and are not part of this repository.
+
+**`notes.md`** has one line per concept:
+
+```markdown
+- useMemo (React) | new | carded 2026-10-09
+- Zod schema (Zod) | shaky | carded 2026-10-09 | wrong 2026-10-09 | review from 2026-10-12
+- Promise (JavaScript) | known | carded 2026-10-02 | right 2026-10-09
+```
+
+| Status | Meaning | Next time the concept comes up |
+| --- | --- | --- |
+| `new` | You saw the card but were never quizzed on it | A one-line reminder |
+| `shaky` | Your last quiz answer was wrong | The full card again, in fresh words, and a quiz question once three days have passed |
+| `known` | Your last quiz answer was right | Nothing; Claude just uses the name |
+
+**`glossary.md`** is your own book of cards: one heading per concept in A–Z order, with the full card, the date and the project it came from.
+
+Both are plain Markdown. Edit them freely: mark something `known` to stop hearing about it, or delete a line to see its card again.
 
 ## Design choices
 
 - **Teaching comments stay in the chat.** Snippets in the chat carry extra `👉` comments; the files do not.
 - **Snippets are copied from the file after writing.** What you read in the chat is the code that exists on disk, not a retyped version.
 - **One idea per snippet.** About 5–25 lines. Long functions are cut into parts and walked through in order.
-- **Concepts are not repeated in full.** A concept already explained in the same conversation gets a one-line reminder. A new conversation starts fresh.
+- **Concepts are not repeated in full.** A concept you have already met gets a one-line reminder, or nothing once you have answered a quiz question on it correctly.
+- **Wrong answers come back.** A concept you got wrong returns as a fresh card and a quiz question three days later.
 - **It answers in your language.** Write in Italian, Persian or anything else and the teaching follows.
 - **It leaves design decisions to you when a learning plugin asks for them.** With [VibeWise](https://github.com/nykooi1/vibe-wise) active, it teaches the concepts first and holds back the solution outline until VibeWise's implementation step.
 
@@ -134,12 +193,15 @@ When you only ask for an explanation of existing code, step 2 skips the writing 
 
 ## Make it yours
 
-Everything lives in [`skills/learn-the-vibe/SKILL.md`](skills/learn-the-vibe/SKILL.md). Common changes:
+Almost everything lives in [`skills/learn-the-vibe/SKILL.md`](skills/learn-the-vibe/SKILL.md). Common changes:
 
 | You want | Change |
 | --- | --- |
 | A different level (for example intermediate) | The first paragraph and the **Voice** section |
 | More or fewer quiz questions | "three" in the **Quiz** section |
+| A different gap before a wrong answer comes back | "3 days" in the **Learner notes** section |
+| Different rules for what counts as `quick` or `deep` | The table under **Pick the lesson size** |
+| A different review session | `review.md` |
 | Teaching comments written into the files too | Step 2 of **The code: piece by piece** |
 | A full concept card every time, even when repeated | The second bullet under **Concept cards** |
 | Different fields on the concept card | The example card under **Concept cards** |
@@ -153,11 +215,13 @@ learn-the-vibe/
 ├── README.md
 └── skills/
     └── learn-the-vibe/
-        └── SKILL.md      the whole skill
+        ├── SKILL.md      the skill
+        └── review.md     review mode, loaded only for /learn-the-vibe review
 ```
 
 ## Good to know
 
-- Replies are longer and sessions use more tokens, because Claude explains as it goes. For a quick fix where you do not want a lesson, say "skip the explanation this time".
+- Replies are longer and sessions use more tokens, because Claude explains as it goes. Use `quick` for small things, or say "skip the explanation this time".
+- The predict question pauses the lesson until you reply. The code is already written by then, so no work is waiting on your answer.
 - The clickable quiz needs a Claude Code surface that supports question pickers. Where it is not available, the questions are written in the chat with lettered options.
 - The picker always adds an "Other" choice for typing your own answer. That comes from Claude Code itself.
