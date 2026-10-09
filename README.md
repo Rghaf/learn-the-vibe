@@ -10,12 +10,13 @@ It is made for people who build with AI and want to learn programming at the sam
 
 | Part | What Claude does |
 | --- | --- |
-| **Friendly voice** | Short sentences, everyday words, everyday comparisons. Every technical word is explained the moment it appears. "Why" comes before "how". |
+| **Friendly, very simple voice** | Small, common English words and short sentences, one idea each. Every technical word is explained the moment it appears. "Why" comes before "how". |
 | **Concept cards** | Every framework, library, tool, language feature or pattern the code uses gets a small card in a quote block: what it is, why it exists, how it is used here, and what to watch out for. |
-| **The idea first** | Before any code: what is being built, the main concepts, the common mistakes, the shape of the solution, and a todo list. |
+| **Engineer's view cards** | Short cards on system design and software engineering: where a piece sits in the system, the trade-off behind a choice, the principle at work, and what happens with more data, more users or a failure. |
+| **Something to read first** | Before Claude touches any file, it sends the todo list and a short explanation, so you have something to read while it works. |
 | **Code in the chat** | Each function, class, type or important line is shown as a real snippet with a link to the file, teaching comments marked `👉`, and a plain explanation underneath. |
 | **Wrap-up** | A 4–7 sentence summary, the list of files added or changed, and which tests or checks ran. |
-| **Quiz** | Three multiple-choice questions you answer by clicking: some about the code, some about the concepts. Claude then sends the correct answers and why. |
+| **Quiz** | Three multiple-choice questions you answer by clicking: one about the code, one about a concept, one about design. Claude then sends the correct answers and why. |
 
 ## What it looks like
 
@@ -26,6 +27,15 @@ A concept card, placed just before the code that uses the concept:
 > **Why it exists:** a component re-runs every time it re-renders. Without it, slow work is repeated on every render.
 > **Here:** we use it so the price list is sorted once, not on every keystroke.
 > **Watch out:** if you forget a value in the list at the end, you get an old, wrong result.
+
+An Engineer's view card, for the design side:
+
+> **🏗️ Engineer's view: where the filter lives**
+> **The choice:** we filter the products on the server, not in the browser.
+> **Why:** the list can grow to many thousands of rows. Sending all of them to the browser would be slow.
+> **The other way:** filtering in the browser is simpler and feels instant, and is fine for a small list.
+> **The cost:** each filter change now needs a request to the server.
+> **The principle:** do the heavy work close to the data.
 
 A piece of code, as it is shown in the chat:
 
@@ -101,9 +111,9 @@ To use it in a single project only, link or copy the folder into that project's 
 
 ## How a session flows
 
-1. **Before the code: the idea.** What we are building and why, concept cards for the main ideas, the mistakes people commonly make, the shape of the solution in plain words, and a todo list.
+1. **Before the work: something to read.** Sent before any file is edited: what we are building and why, the todo list, concept cards for the main ideas, an Engineer's view card for the big picture, the mistakes people commonly make, and the shape of the solution in plain words. It takes a minute or two to read while Claude works.
 2. **The code: piece by piece.** Claude writes the code into your files in the project's own style. Then, for each piece, it names it with a clickable link, shows the real snippet with `👉` comments, explains what goes in and what comes out, and adds a card for any new concept. The todo list is shown again with finished steps ticked.
-3. **After the code: wrap-up.** Summary, files changed, what was tested.
+3. **After the code: wrap-up.** Summary with the main design choice and its trade-off, files changed, what was tested.
 4. **Quiz.** Three questions with clickable options. After you answer, Claude sends ✅ or ❌ for each, the correct answer, and a sentence or two on why. If you picked a wrong option, it also says why that option was tempting.
 
 When you only ask for an explanation of existing code, step 2 skips the writing and teaches the code that is already there.
