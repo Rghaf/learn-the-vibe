@@ -78,9 +78,25 @@ The quiz at the end:
 
 ## Install
 
-You need Claude Code. The skill is one Markdown file with no scripts and no dependencies.
+You need Claude Code. The skill is two Markdown files with no scripts and no dependencies.
 
-Clone the repository, then link the skill into your personal skills folder so it works in every project:
+### One step: install as a plugin
+
+In Claude Code, add the marketplace and then install the plugin. Run the two commands one at a time:
+
+```text
+/plugin marketplace add Rghaf/learn-the-vibe
+```
+
+```text
+/plugin install learn-the-vibe@learn-the-vibe
+```
+
+Restart Claude Code. Because it is a plugin, the command carries the plugin name: `/learn-the-vibe:learn-the-vibe`. Claude also loads it by itself when you ask it to write, change or explain code. To get updates later, run `/plugin marketplace update learn-the-vibe`.
+
+### Or: clone and link
+
+Clone the repository, then link the skill into your personal skills folder so it works in every project. Here the command is the short `/learn-the-vibe`:
 
 ```bash
 git clone https://github.com/Rghaf/learn-the-vibe.git ~/learn-the-vibe
@@ -213,6 +229,10 @@ If you installed with the symlink above, edits take effect in the next Claude Co
 ```text
 learn-the-vibe/
 ├── README.md
+├── LICENSE
+├── .claude-plugin/
+│   ├── plugin.json        the plugin's name, version and description
+│   └── marketplace.json   lets `/plugin marketplace add` find the plugin
 └── skills/
     └── learn-the-vibe/
         ├── SKILL.md      the skill
@@ -225,3 +245,7 @@ learn-the-vibe/
 - The predict question pauses the lesson until you reply. The code is already written by then, so no work is waiting on your answer.
 - The clickable quiz needs a Claude Code surface that supports question pickers. Where it is not available, the questions are written in the chat with lettered options.
 - The picker always adds an "Other" choice for typing your own answer. That comes from Claude Code itself.
+
+## License
+
+[MIT](LICENSE). You can use, change and share it, including for work you are paid for. Keep the licence notice with copies. It comes without a warranty.

@@ -1,0 +1,14 @@
+{
+  "name": "learn-the-vibe",
+  "owner": { "name": "Reza Ghadiri" },
+  "metadata": {
+    "description": "Learn the Vibe: understand every line of the code your AI writes."
+  },
+  "plugins": [
+    {
+      "name": "learn-the-vibe",
+      "source": "./",
+      "description": "A kind teacher inside Claude Code: simple words, concept cards, code shown piece by piece, and a quiz."
+    }
+  ]
+}

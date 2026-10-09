@@ -1,0 +1,9 @@
+{
+  "name": "learn-the-vibe",
+  "version": "0.1.0",
+  "description": "A kind teacher inside Claude Code: simple words, concept cards, code shown piece by piece, and a quiz.",
+  "author": { "name": "Reza Ghadiri" },
+  "repository": "https://github.com/Rghaf/learn-the-vibe",
+  "license": "MIT",
+  "keywords": ["learning", "teaching", "code-explanation", "quiz"]
+}
